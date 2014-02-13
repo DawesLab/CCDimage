@@ -36,7 +36,9 @@ class Capture():
         # Background reference image in an np array
 
         self.output = []  # Contains analyzed data
-        self.dataOut = np.array([[[]]])  # Save location for takeData()
+        self.dataOut = np.array([[[]]])
+        # Save location for takeData(); of form [mode, frame, round]
+        
         self.peak_mode = 0  # The peak mode of the data set
         self.qfig = 0  # Will be made into a graph
 
@@ -62,7 +64,7 @@ class Capture():
     #Finds the peak mode of the data set taken by takeData()
     def findPeakMode(self):
         print "This function has not yet been implemented."
-        # TODO: import mode_strength_plot to find mode.
+        # TODO: import mode_strength_plot to find mode
         # Set strongest mode to self.peak_mode
 
     # Makes a histogram figure
@@ -72,6 +74,12 @@ class Capture():
         mode_array = self.dataOut[mode, :, :].flatten()
         # takes only the desired mode
         self.qfig = Qfunc.qfuncimage(mode_array, 30, 0)
+        #displays the phasor histogram
+
+    # Generates an FFT graph for the average shot
+    def fftGraph(self):
+        plt.plot(np.average(np.average(self.dataOut, 1), 1) )
+        plt.show()
 
     # Saves Qfig as a .png file in the default directory or wherever specified
     def saveQfig(self, root_path="/home/photon/data/"):
@@ -177,6 +185,7 @@ class Capture():
         clearData( )
         takeData( )
         findPeakMode( ) # Not yet implemented
+        fftGraph( )
         makeQfig( mode )
         saveQfig( path )
         saveRaw( path )
