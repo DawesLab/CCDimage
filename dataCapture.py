@@ -142,7 +142,7 @@ class Capture():
             for f in range(0, frames):
                 corrected = data[:, :, f] - self.background[:, :]
                 # could probably speed this up?
-                self.dataOut[:, f, i] = fft(corrected[195:205, minPixel:maxPixel].sum(axis=0))
+                self.dataOut[:, f, i] = fft(np.average(corrected[195:205, minPixel:maxPixel], 0))
         print "Finished"
 
     # Ask server to take N images
