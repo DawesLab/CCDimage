@@ -78,6 +78,7 @@ class Capture():
 
     # Generates an FFT graph for the average shot
     def fftGraph(self):
+        # Todo tidy up nested average, is there a better way?
         plt.plot(np.average(np.average(self.dataOut, 1), 1) )
         plt.show()
 
