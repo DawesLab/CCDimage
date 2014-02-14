@@ -38,7 +38,7 @@ class Capture():
         self.output = []  # Contains analyzed data
         self.dataOut = np.array([[[]]])
         # Save location for takeData(); of form [mode, frame, round]
-        
+
         self.peak_mode = 0  # The peak mode of the data set
         self.qfig = 0  # Will be made into a graph
 
@@ -55,7 +55,7 @@ class Capture():
     def takeBackground(self, N=5):  # default number of shots to average is 5
         self.request_images(N)
         images = self.open_images()
-        self.background = np.mean(images, 2)
+        self.background = np.mean(images, axis=2)
 
     # Clears all analysis data
     def clearData(self):
@@ -142,7 +142,7 @@ class Capture():
             for f in range(0, frames):
                 corrected = data[:, :, f] - self.background[:, :]
                 # could probably speed this up?
-                self.dataOut[:, f, i] = fft(np.average(corrected[195:205, minPixel:maxPixel], 0))
+                self.dataOut[:, f, i] = fft(np.average(corrected[195:205, minPixel:maxPixel], axis=0))
         print "Finished"
 
     # Ask server to take N images
