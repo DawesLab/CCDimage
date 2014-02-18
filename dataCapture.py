@@ -34,6 +34,7 @@ class Capture():
 
         self.background = np.array([[[]]])
         # Background reference image in an np array
+        self.vacuumFFT = np.array([[[]]])
 
         self.output = []  # Contains analyzed data
         self.dataOut = np.array([[[]]])
@@ -57,6 +58,25 @@ class Capture():
         images = self.open_images()
         self.background = np.mean(images, axis=2)
 
+    # Averages N shots of background and sets to background variable
+    def takeVacuumFFT(self, N=50, M=20, ROI=[500, 900]):  # default number of shots to average is 5
+        minPixel = ROI[0]
+        maxPixel = ROI[1]
+
+        tempdata = np.empty([maxPixel-minPixel,N,M], dtype=complex)
+        for i in range(M):
+            self.request_images(N)
+            data = self.open_images()
+            frames = data.shape[2]
+            # ydim = data.shape[0]
+            # xdim = data.shape[1]
+
+            for f in range(0, frames):
+                corrected = data[:, :, f] - self.background[:, :]
+                # could probably speed this up?
+                tempdata[:, f, i] = fft(np.average(corrected[195:205, minPixel:maxPixel], axis=0))
+        self.vacuumFFT = np.average(tempdata, axis=(1,2))
+
     # Clears all analysis data
     def clearData(self):
         self.output = []
@@ -78,8 +98,7 @@ class Capture():
 
     # Generates an FFT graph for the average shot
     def fftGraph(self):
-        # Todo tidy up nested average, is there a better way?
-        plt.plot(np.average(np.average(self.dataOut, 1), 1) )
+        plt.plot(np.average(np.log(abs(self.dataOut) ), axis=(1,2) ) )
         plt.show()
 
     # Saves Qfig as a .png file in the default directory or wherever specified
@@ -143,7 +162,8 @@ class Capture():
             for f in range(0, frames):
                 corrected = data[:, :, f] - self.background[:, :]
                 # could probably speed this up?
-                self.dataOut[:, f, i] = fft(np.average(corrected[195:205, minPixel:maxPixel], axis=0))
+                self.dataOut[:, f, i] = fft(np.average(corrected[195:205, minPixel:maxPixel], axis=0))\
+                - self.vacuumFFT
         print "Finished"
 
     # Ask server to take N images
