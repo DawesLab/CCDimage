@@ -1,5 +1,8 @@
 
 #from qfigures import saveQfig, saveRaw
+import datetime
+import os
+import numpy as np
 
 def saveQfig(root_path = "/home/photon/Dropbox/Data/"):
     """
@@ -19,7 +22,7 @@ def saveQfig(root_path = "/home/photon/Dropbox/Data/"):
 
     print(filename)
 
-def saveRaw(root_path = "/home/photon/data/"):
+def saveRaw(VacCorrected,ncount,root_path = "/home/photon/data/"):
     """
     Save Raw zipped data as .npz of array of complex max values of fft's
     Creates a folder with today's date: 01-13-2014
