@@ -4,7 +4,7 @@ import datetime
 import os
 import numpy as np
 
-def saveQfig(root_path = "/home/photon/Dropbox/Data/"):
+def saveQfig(qfig,output,root_path = "/home/photon/Dropbox/Data/"):
     """
     Save Qfig data as .png of qfunc and .npy of array of complex max values of fft's
     Creates a folder with today's date: 01-13-2014
