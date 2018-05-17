@@ -1,6 +1,6 @@
 #from arduinoshutter import sigOpen, sigClose
 import serial
-shutter = serial.Serial("/dev/ttyACM0")
+shutter = serial.Serial("/dev/ttyACM1")
 def sigOpen():
     shutter.write("b\n")
     #print("Shutter Open")
