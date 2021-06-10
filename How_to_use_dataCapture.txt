@@ -1,0 +1,18 @@
+How to run dataCapture code:
+
+1.  Navigate to /code/Camserver
+
+2.  Start the picam server by typing:
+$ sudo python Server.py
+
+3.  Navigate to /code/CCDimage and start the ipython interpreter
+
+4.  Enter the following:
+$ %pylab
+$ import dataCapture as dc
+$ cp = dc.Capture()
+
+5.  The program is now ready to use. Before taking data, you must take
+    background shots with cp.takeBackground()
+
+6. For additional information on available functions, type cp.help()
