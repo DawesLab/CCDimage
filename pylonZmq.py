@@ -5,21 +5,23 @@ from numpy import frombuffer
 REQUEST_TIMEOUT = 25000
 SERVER_ENDPOINT = "tcp://localhost:5555"
 
-context = zmq.Context()
+def create_client():
+    context = zmq.Context()
 
-#  Socket to talk to server
-print("Connecting to array server...")
-client = context.socket(zmq.REQ)
-client.connect(SERVER_ENDPOINT)
+    #  Socket to talk to server
+    print("Connecting to array server...")
+    client = context.socket(zmq.REQ)
+    client.connect(SERVER_ENDPOINT)
 
-poll = zmq.Poller()
-poll.register(client, zmq.POLLIN)
+    poll = zmq.Poller()
+    poll.register(client, zmq.POLLIN)
+    return client, poll
 
 def recv_array(socket, flags=0, copy=False, track=False):
     """recv a numpy array"""
     md = socket.recv_json(flags=flags)
     msg = socket.recv(flags=flags, copy=copy, track=track)
-    buf = buffer(msg)
+    buf = memoryview(msg)
     A = frombuffer(buf, dtype=md['dtype'])
     return A.reshape(md['shape'])
 
@@ -28,9 +30,9 @@ def request_images(client,N=1):
     request = str(shots_requested)  # ask for one shot of data
     #print "I: Sending (%s)" % request
 
-    client.send(request)
+    client.send(str.encode(request))
 
-def open_images():
+def open_images(client,poll):
     socks = dict(poll.poll(REQUEST_TIMEOUT))
     if socks.get(client) == zmq.POLLIN:
         data_array = recv_array(client)
